@@ -6,6 +6,7 @@ export function useAudioPlayer() {
   const audioCtx = useRef<AudioContext | null>(null);
   const gainNode = useRef<GainNode | null>(null);
   const sourceNode = useRef<AudioBufferSourceNode | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const start = async () => {
     if (!audioCtx.current) {
@@ -17,6 +18,18 @@ export function useAudioPlayer() {
       console.log("State:", audioCtx.current?.state);
       setHasStarted(true);
     });
+  };
+
+  const handlePause = async () => {
+    if (audioCtx.current === null) return;
+
+    if (isPaused) {
+      await audioCtx.current.resume();
+      setIsPaused(false);
+    } else {
+      await audioCtx.current.suspend();
+      setIsPaused(true);
+    }
   };
 
   const stopPreviousSource = () => {
@@ -51,7 +64,9 @@ export function useAudioPlayer() {
 
   return {
     hasStarted,
+    isPaused,
     start,
+    handlePause,
     stopPreviousSource,
     playAudioBuffer,
     setVolume,

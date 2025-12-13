@@ -7,6 +7,8 @@ function MusicPlayer() {
   const {
     hasStarted,
     start,
+    isPaused,
+    handlePause,
     stopPreviousSource,
     playAudioBuffer,
     setVolume,
@@ -69,7 +71,6 @@ function MusicPlayer() {
       <div>
         <input type="file" accept="audio/*" onChange={handleSongUpload} />
         {hasStarted && <p>Audio Engine Ready</p>}
-        <button onClick={startAudioTrack}>Initialize Audio</button>
         <input
           type="range"
           min="0"
@@ -77,6 +78,7 @@ function MusicPlayer() {
           step="1"
           onChange={handleVolumeChange}
         />
+        <button onClick={handlePause}>{isPaused ? "Play" : "Pause"}</button>
       </div>
     </>
   );
