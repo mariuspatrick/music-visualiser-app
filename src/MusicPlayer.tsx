@@ -83,7 +83,7 @@ function MusicPlayer() {
           className="cursor-pointer"
         />
 
-        <div className="flex justify-center gap-4 w-full">
+        <div className="flex w-full justify-center gap-4">
           <button onClick={handlePause}>
             {isPaused ? (
               <FontAwesomeIcon icon={faPlay} />
@@ -100,13 +100,13 @@ function MusicPlayer() {
               <FontAwesomeIcon icon={faVolumeHigh} />
             </button>
             {showVolume && (
-              <div className="mb-2 p-2     rounded-lg shadow-lg">
+              <div className="mb-2 rounded-lg p-2 shadow-lg">
                 <input
                   type="range"
                   min="0"
                   max="100"
                   step="1"
-                  className="h-32 writing-mode-vertical"
+                  className="writing-mode-vertical h-32"
                   style={{ writingMode: "vertical-lr", direction: "rtl" }}
                   onChange={handleVolumeChange}
                 />
