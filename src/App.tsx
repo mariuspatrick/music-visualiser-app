@@ -1,10 +1,10 @@
 import "./App.css";
-import MusicPlayer from "./MusicPlayer";
+import MusicPlayer from "./music-player/MusicPlayer";
 
 function App() {
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <MusicPlayer />
       </div>
     </>
