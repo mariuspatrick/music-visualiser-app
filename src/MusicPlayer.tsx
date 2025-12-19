@@ -71,14 +71,17 @@ function MusicPlayer() {
       <div>
         <input type="file" accept="audio/*" onChange={handleSongUpload} />
         {hasStarted && <p>Audio Engine Ready</p>}
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="1"
-          onChange={handleVolumeChange}
-        />
-        <button onClick={handlePause}>{isPaused ? "Play" : "Pause"}</button>
+        <div className="flex justify-between items-center gap-4">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            className="flex-1"
+            onChange={handleVolumeChange}
+          />
+          <button onClick={handlePause}>{isPaused ? "Play" : "Pause"}</button>
+        </div>
       </div>
     </>
   );
