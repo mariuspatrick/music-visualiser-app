@@ -4,7 +4,9 @@ import MusicPlayer from "./MusicPlayer";
 function App() {
   return (
     <>
-      <MusicPlayer />
+      <div className="flex items-center justify-center min-h-screen">
+        <MusicPlayer />
+      </div>
     </>
   );
 }

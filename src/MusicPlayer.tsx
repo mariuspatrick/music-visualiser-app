@@ -79,6 +79,14 @@ function MusicPlayer() {
         />
         {hasStarted && <p>Audio Engine Ready</p>}
         <div className="flex justify-between items-center gap-4">
+          <button onClick={handlePause}>
+            {isPaused ? (
+              <FontAwesomeIcon icon={faPlay} />
+            ) : (
+              <FontAwesomeIcon icon={faPause} />
+            )}
+          </button>
+
           <input
             type="range"
             min="0"
@@ -87,15 +95,6 @@ function MusicPlayer() {
             className="flex-1"
             onChange={handleVolumeChange}
           />
-
-          {isPaused}
-          <button onClick={handlePause}>
-            {isPaused ? (
-              <FontAwesomeIcon icon={faPlay} />
-            ) : (
-              <FontAwesomeIcon icon={faPause} />
-            )}
-          </button>
         </div>
       </div>
     </>
