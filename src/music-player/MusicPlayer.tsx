@@ -8,7 +8,8 @@ function MusicPlayer() {
   const {
     start,
     isPaused,
-    handlePause,
+    restart,
+    pause,
     stopPreviousSource,
     playAudioBuffer,
     setVolume,
@@ -19,16 +20,12 @@ function MusicPlayer() {
   const file = useRef<File>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function startAudioTrack() {
-    start();
-  }
-
   function handleButtonClick() {
     fileInputRef.current?.click();
   }
 
   async function handleSongUpload(e: ReactChangeEvent) {
-    if (!isInitialized()) startAudioTrack();
+    if (!isInitialized()) start();
 
     const selectedFile = e.target.files?.[0];
 
@@ -84,7 +81,8 @@ function MusicPlayer() {
 
         <MusicPlayerControls
           isPaused={isPaused}
-          onPause={handlePause}
+          onRewind={restart}
+          onPause={pause}
           onVolumeChange={setVolume}
         />
       </div>

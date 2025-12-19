@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
   faPause,
+  faStepBackward,
   faVolumeHigh,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,11 +13,13 @@ interface MusicPlayerControlsProps {
   isPaused: boolean;
   onPause: () => void;
   onVolumeChange: (volume: number) => void;
+  onRewind: () => void;
 }
 
 function MusicPlayerControls({
   isPaused,
   onPause,
+  onRewind,
   onVolumeChange,
 }: MusicPlayerControlsProps) {
   const [showVolume, setShowVolume] = useState(false);
@@ -34,6 +37,10 @@ function MusicPlayerControls({
         ) : (
           <FontAwesomeIcon icon={faPause} />
         )}
+      </button>
+
+      <button onClick={onRewind}>
+        <FontAwesomeIcon icon={faStepBackward} />
       </button>
 
       <div className="relative flex items-center">

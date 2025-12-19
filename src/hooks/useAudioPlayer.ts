@@ -20,7 +20,25 @@ export function useAudioPlayer() {
     });
   };
 
-  const handlePause = async () => {
+  // to restart we need to create a new AudioBufferSourceNode using the same source file from scratch
+  // we cannot simply 'rewind'
+  const restart = async () => {
+    if (!sourceNode.current || !audioCtx.current || !gainNode.current) return;
+
+    const currentBuffer = sourceNode.current.buffer;
+
+    stopPreviousSource();
+
+    const newSource = audioCtx.current.createBufferSource();
+
+    newSource.buffer = currentBuffer;
+
+    newSource.connect(gainNode.current);
+    newSource.start(0);
+    sourceNode.current = newSource;
+  };
+
+  const pause = async () => {
     if (audioCtx.current === null) return;
 
     if (isPaused) {
@@ -66,7 +84,8 @@ export function useAudioPlayer() {
     hasStarted,
     isPaused,
     start,
-    handlePause,
+    restart,
+    pause,
     stopPreviousSource,
     playAudioBuffer,
     setVolume,
