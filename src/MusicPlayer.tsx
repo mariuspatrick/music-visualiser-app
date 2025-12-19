@@ -1,7 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useAudioPlayer } from "./hooks/useAudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlay,
+  faPause,
+  faVolumeHigh,
+} from "@fortawesome/free-solid-svg-icons";
 
 type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
@@ -19,6 +23,7 @@ function MusicPlayer() {
   } = useAudioPlayer();
 
   const file = useRef<File>(null);
+  const [showVolume, setShowVolume] = useState(false);
 
   function startAudioTrack() {
     start();
@@ -70,15 +75,15 @@ function MusicPlayer() {
 
   return (
     <>
-      <div>
+      <div className="flex flex-col gap-4">
         <input
           type="file"
           accept="audio/*"
           onChange={handleSongUpload}
           className="cursor-pointer"
         />
-        {hasStarted && <p>Audio Engine Ready</p>}
-        <div className="flex justify-between items-center gap-4">
+
+        <div className="flex justify-center gap-4 w-full">
           <button onClick={handlePause}>
             {isPaused ? (
               <FontAwesomeIcon icon={faPlay} />
@@ -87,14 +92,27 @@ function MusicPlayer() {
             )}
           </button>
 
-          <input
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            className="flex-1"
-            onChange={handleVolumeChange}
-          />
+          <div className="flex w-full items-center">
+            <button
+              onClick={() => setShowVolume(!showVolume)}
+              className="cursor-pointer"
+            >
+              <FontAwesomeIcon icon={faVolumeHigh} />
+            </button>
+            {showVolume && (
+              <div className="mb-2 p-2     rounded-lg shadow-lg">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  className="h-32 writing-mode-vertical"
+                  style={{ writingMode: "vertical-lr", direction: "rtl" }}
+                  onChange={handleVolumeChange}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
