@@ -1,5 +1,7 @@
 import { useRef } from "react";
 import { useAudioPlayer } from "./hooks/useAudioPlayer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 
 type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
@@ -69,7 +71,12 @@ function MusicPlayer() {
   return (
     <>
       <div>
-        <input type="file" accept="audio/*" onChange={handleSongUpload} />
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={handleSongUpload}
+          className="cursor-pointer"
+        />
         {hasStarted && <p>Audio Engine Ready</p>}
         <div className="flex justify-between items-center gap-4">
           <input
@@ -80,7 +87,15 @@ function MusicPlayer() {
             className="flex-1"
             onChange={handleVolumeChange}
           />
-          <button onClick={handlePause}>{isPaused ? "Play" : "Pause"}</button>
+
+          {isPaused}
+          <button onClick={handlePause}>
+            {isPaused ? (
+              <FontAwesomeIcon icon={faPlay} />
+            ) : (
+              <FontAwesomeIcon icon={faPause} />
+            )}
+          </button>
         </div>
       </div>
     </>
