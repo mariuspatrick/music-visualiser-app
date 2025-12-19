@@ -1,17 +1,11 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useAudioPlayer } from "./hooks/useAudioPlayer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlay,
-  faPause,
-  faVolumeHigh,
-} from "@fortawesome/free-solid-svg-icons";
+import MusicPlayerControls from "./MusicPlayerControls";
 
 type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
 function MusicPlayer() {
   const {
-    hasStarted,
     start,
     isPaused,
     handlePause,
@@ -23,7 +17,6 @@ function MusicPlayer() {
   } = useAudioPlayer();
 
   const file = useRef<File>(null);
-  const [showVolume, setShowVolume] = useState(false);
 
   function startAudioTrack() {
     start();
@@ -66,13 +59,6 @@ function MusicPlayer() {
     }
   }
 
-  function handleVolumeChange(rangeEvent: ReactChangeEvent) {
-    const { value } = rangeEvent.target;
-
-    // gainNode uses volume from 0 to 1 so we divide by 100 (unless you want your ears to be blasted :( )
-    setVolume(parseInt(value) / 100);
-  }
-
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -83,37 +69,11 @@ function MusicPlayer() {
           className="cursor-pointer"
         />
 
-        <div className="flex w-full justify-center gap-4">
-          <button onClick={handlePause}>
-            {isPaused ? (
-              <FontAwesomeIcon icon={faPlay} />
-            ) : (
-              <FontAwesomeIcon icon={faPause} />
-            )}
-          </button>
-
-          <div className="flex w-full items-center">
-            <button
-              onClick={() => setShowVolume(!showVolume)}
-              className="cursor-pointer"
-            >
-              <FontAwesomeIcon icon={faVolumeHigh} />
-            </button>
-            {showVolume && (
-              <div className="mb-2 rounded-lg p-2 shadow-lg">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  className="writing-mode-vertical h-32"
-                  style={{ writingMode: "vertical-lr", direction: "rtl" }}
-                  onChange={handleVolumeChange}
-                />
-              </div>
-            )}
-          </div>
-        </div>
+        <MusicPlayerControls
+          isPaused={isPaused}
+          onPause={handlePause}
+          onVolumeChange={setVolume}
+        />
       </div>
     </>
   );
