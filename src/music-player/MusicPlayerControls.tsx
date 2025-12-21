@@ -31,11 +31,17 @@ function MusicPlayerControls({
 
   return (
     <div className="flex justify-center gap-4">
-      <button onClick={onRewind}>
+      <button
+        onClick={onRewind}
+        className="transition-colors hover:text-slate-300"
+      >
         <FontAwesomeIcon icon={faStepBackward} />
       </button>
 
-      <button onClick={onPause}>
+      <button
+        onClick={onPause}
+        className="transition-colors hover:text-slate-300"
+      >
         {isPaused ? (
           <FontAwesomeIcon icon={faPlay} />
         ) : (
@@ -44,7 +50,10 @@ function MusicPlayerControls({
       </button>
 
       <div className="relative flex items-center">
-        <button onClick={() => setShowVolume(!showVolume)}>
+        <button
+          onClick={() => setShowVolume(!showVolume)}
+          className="transition-colors hover:text-slate-300"
+        >
           <FontAwesomeIcon icon={faVolumeHigh} />
         </button>
         {showVolume && (

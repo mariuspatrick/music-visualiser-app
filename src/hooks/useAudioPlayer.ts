@@ -79,10 +79,11 @@ export function useAudioPlayer() {
 
   const stopPreviousSource = () => {
     if (sourceNode.current) {
-      setCurrentTime(0);
       sourceNode.current.stop();
       sourceNode.current.disconnect();
       sourceNode.current = null;
+
+      setCurrentTime(0);
     }
   };
 
