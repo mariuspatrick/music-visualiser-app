@@ -1,15 +1,21 @@
 import { useCallback, useRef, useState } from "react";
 
+const DEFAULT_VOLUME = 5;
+
 export function useAudioPlayer() {
   const audioCtx = useRef<AudioContext | null>(null);
   const gainNode = useRef<GainNode | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  const volumeRef = useRef(DEFAULT_VOLUME);
 
   const initialize = async () => {
     if (!audioCtx.current) {
       audioCtx.current = new AudioContext();
       // const analyser = new AnalyserNode(audioCtx.current);
       gainNode.current = audioCtx.current.createGain();
+
+      gainNode.current.gain.value = volumeRef.current;
+
       gainNode.current.connect(audioCtx.current.destination);
       // const analyser = audioCtx.createAnalyser();
     }
@@ -86,6 +92,8 @@ export function useAudioPlayer() {
   };
 
   const setVolume = (value: number) => {
+    volumeRef.current = value;
+
     if (gainNode.current) {
       gainNode.current.gain.value = value;
     }
@@ -108,6 +116,7 @@ export function useAudioPlayer() {
     hasStarted,
     isPaused,
     duration,
+    volume: volumeRef.current,
     initialize,
     restart,
     pause,

@@ -10,6 +10,7 @@ function MusicPlayer() {
     isPaused,
     duration,
     hasStarted,
+    volume,
     initialize,
     restart,
     pause,
@@ -99,6 +100,7 @@ function MusicPlayer() {
 
         <MusicPlayerControls
           isPaused={isPaused}
+          volume={volume}
           onRewind={restart}
           onPause={pause}
           onVolumeChange={setVolume}

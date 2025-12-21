@@ -12,6 +12,7 @@ type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 interface MusicPlayerControlsProps {
   isPaused: boolean;
   onPause: () => void;
+  volume: number;
   onVolumeChange: (volume: number) => void;
   onRewind: () => void;
 }
@@ -23,10 +24,12 @@ function MusicPlayerControls({
   onVolumeChange,
 }: MusicPlayerControlsProps) {
   const [showVolume, setShowVolume] = useState(false);
+  const [volumeState, setVolumeState] = useState(5);
 
   function handleVolumeChange(rangeEvent: ReactChangeEvent) {
-    const { value } = rangeEvent.target;
-    onVolumeChange(parseInt(value) / 100);
+    const newVol = parseFloat(rangeEvent.target.value);
+    setVolumeState(newVol);
+    onVolumeChange(newVol);
   }
 
   return (
@@ -61,8 +64,9 @@ function MusicPlayerControls({
             <input
               type="range"
               min="0"
-              max="100"
-              step="1"
+              max="10"
+              step="0.1"
+              value={volumeState}
               className="h-32"
               style={{ writingMode: "vertical-lr", direction: "rtl" }}
               onChange={handleVolumeChange}
