@@ -27,6 +27,10 @@ function ProgressBar({
       if (isPlaying) {
         const time = getCurrentTime();
 
+        if (time > duration) {
+          return () => cancelAnimationFrame(animationFrameId);
+        }
+
         setCurrentTime(time);
 
         animationFrameId = requestAnimationFrame(loop);
@@ -40,7 +44,7 @@ function ProgressBar({
 
     // CLEANUP: If we pause or unmount, kill the loop
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isPlaying]);
+  }, [isPlaying, duration]);
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
