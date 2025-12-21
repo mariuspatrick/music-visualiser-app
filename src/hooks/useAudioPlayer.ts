@@ -5,7 +5,7 @@ export function useAudioPlayer() {
   const gainNode = useRef<GainNode | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
 
-  const start = async () => {
+  const initialize = async () => {
     if (!audioCtx.current) {
       audioCtx.current = new AudioContext();
       // const analyser = new AnalyserNode(audioCtx.current);
@@ -17,28 +17,6 @@ export function useAudioPlayer() {
       console.log("State:", audioCtx.current?.state);
       setHasStarted(true);
     });
-  };
-
-  // to restart we need to create a new AudioBufferSourceNode using the same source file and start it from scratch
-  // we cannot simply 'rewind'
-  const sourceNode = useRef<AudioBufferSourceNode | null>(null);
-
-  const restart = async () => {
-    if (!sourceNode.current || !audioCtx.current || !gainNode.current) return;
-
-    const currentBuffer = sourceNode.current.buffer;
-
-    stopPreviousSource();
-
-    const newSource = audioCtx.current.createBufferSource();
-
-    startTime.current = audioCtx.current.currentTime;
-
-    newSource.buffer = currentBuffer;
-
-    newSource.connect(gainNode.current);
-    newSource.start(0);
-    sourceNode.current = newSource;
   };
 
   const [isPaused, setIsPaused] = useState(false);
@@ -55,6 +33,50 @@ export function useAudioPlayer() {
     }
   };
 
+  const connectAndStart = (buffer: AudioBuffer) => {
+    if (!audioCtx.current || !gainNode.current) return;
+
+    const source = audioCtx.current.createBufferSource();
+    source.buffer = buffer;
+
+    // Connect Source -> Gain (and implicitly to -> Destination)
+    source.connect(gainNode.current);
+
+    // reset Time, every time we start a sound
+    startTime.current = audioCtx.current.currentTime;
+
+    // Update the UI duration
+    setDuration(buffer.duration);
+
+    source.start(0);
+    sourceNode.current = source;
+  };
+
+  const [duration, setDuration] = useState(0);
+  const startTime = useRef(0);
+
+  const playAudioBuffer = (audioBuffer: AudioBuffer) => {
+    stopPreviousSource();
+
+    connectAndStart(audioBuffer);
+
+    setIsPaused(false);
+  };
+
+  // to restart we need to create a new AudioBufferSourceNode using the same source file and start it from scratch
+  // we cannot simply 'rewind'
+  const sourceNode = useRef<AudioBufferSourceNode | null>(null);
+
+  const restart = () => {
+    if (!sourceNode.current || !sourceNode.current.buffer) return;
+
+    const currentBuffer = sourceNode.current.buffer;
+
+    stopPreviousSource();
+
+    connectAndStart(currentBuffer);
+  };
+
   const stopPreviousSource = () => {
     if (sourceNode.current) {
       setCurrentTime(0);
@@ -62,27 +84,6 @@ export function useAudioPlayer() {
       sourceNode.current.disconnect();
       sourceNode.current = null;
     }
-  };
-
-  const [duration, setDuration] = useState(0);
-  const startTime = useRef(0);
-
-  const playAudioBuffer = (audioBuffer: AudioBuffer) => {
-    if (!audioCtx.current || !gainNode.current) return;
-
-    const source = audioCtx.current.createBufferSource();
-
-    // the source audio buffer (the actual song)
-    source.buffer = audioBuffer;
-
-    setDuration(audioBuffer.duration);
-
-    startTime.current = audioCtx.current.currentTime;
-
-    source.connect(gainNode.current);
-    source.start();
-
-    sourceNode.current = source;
   };
 
   const setVolume = (value: number) => {
@@ -125,7 +126,7 @@ export function useAudioPlayer() {
     isPaused,
     duration,
     currentTime,
-    start,
+    initialize,
     restart,
     pause,
     stopPreviousSource,

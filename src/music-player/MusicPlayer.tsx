@@ -9,7 +9,7 @@ function MusicPlayer() {
     currentTime,
     isPaused,
     duration,
-    start,
+    initialize,
     restart,
     pause,
     stopPreviousSource,
@@ -27,7 +27,7 @@ function MusicPlayer() {
   }
 
   async function handleSongUpload(e: ReactChangeEvent) {
-    if (!isInitialized()) start();
+    if (!isInitialized()) initialize();
 
     const selectedFile = e.target.files?.[0];
 
