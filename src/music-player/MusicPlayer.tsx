@@ -1,14 +1,15 @@
 import { useRef } from "react";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import MusicPlayerControls from "./MusicPlayerControls";
+import ProgressBar from "./ProgressBar";
 
 type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
 function MusicPlayer() {
   const {
-    currentTime,
     isPaused,
     duration,
+    hasStarted,
     initialize,
     restart,
     pause,
@@ -17,6 +18,7 @@ function MusicPlayer() {
     setVolume,
     decodeAudioData,
     isInitialized,
+    getCurrentTime,
   } = useAudioPlayer();
 
   const file = useRef<File>(null);
@@ -81,13 +83,19 @@ function MusicPlayer() {
           {file.current ? file.current.name : "Upload a song"}
         </button>
 
-        {file.current && (
+        {/* {file.current && (
           <div>
             <h2>
               Time: {currentTime.toFixed(1)} / {duration}
             </h2>
           </div>
-        )}
+        )} */}
+
+        <ProgressBar
+          duration={duration}
+          isPlaying={hasStarted}
+          getCurrentTime={getCurrentTime}
+        />
 
         <MusicPlayerControls
           isPaused={isPaused}

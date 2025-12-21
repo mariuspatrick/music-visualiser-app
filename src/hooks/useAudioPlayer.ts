@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export function useAudioPlayer() {
   const audioCtx = useRef<AudioContext | null>(null);
@@ -82,8 +82,6 @@ export function useAudioPlayer() {
       sourceNode.current.stop();
       sourceNode.current.disconnect();
       sourceNode.current = null;
-
-      setCurrentTime(0);
     }
   };
 
@@ -98,35 +96,18 @@ export function useAudioPlayer() {
     return audioCtx.current.decodeAudioData(arrayBuffer);
   };
 
-  const [currentTime, setCurrentTime] = useState(0);
-  useEffect(() => {
-    let animationFrameId: number;
+  const getCurrentTime = useCallback(() => {
+    if (!audioCtx.current) return 0;
 
-    // this runs 60 times a second
-    const loop = () => {
-      if (audioCtx.current && !isPaused) {
-        const time = audioCtx.current.currentTime - startTime.current;
+    const rawTime = audioCtx.current.currentTime - startTime.current;
 
-        setCurrentTime(time);
-
-        animationFrameId = requestAnimationFrame(loop);
-      }
-    };
-
-    // START condition: If we are playing, start the loop
-    if (hasStarted && !isPaused) {
-      loop();
-    }
-
-    // CLEANUP: If we pause or unmount, kill the loop
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [hasStarted, isPaused]);
+    return Math.max(0, rawTime);
+  }, []);
 
   return {
     hasStarted,
     isPaused,
     duration,
-    currentTime,
     initialize,
     restart,
     pause,
@@ -134,6 +115,7 @@ export function useAudioPlayer() {
     playAudioBuffer,
     setVolume,
     decodeAudioData,
+    getCurrentTime,
     isInitialized: () => audioCtx.current !== null,
   };
 }
