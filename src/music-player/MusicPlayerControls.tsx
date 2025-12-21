@@ -31,16 +31,16 @@ function MusicPlayerControls({
 
   return (
     <div className="flex justify-center gap-4">
+      <button onClick={onRewind}>
+        <FontAwesomeIcon icon={faStepBackward} />
+      </button>
+
       <button onClick={onPause}>
         {isPaused ? (
           <FontAwesomeIcon icon={faPlay} />
         ) : (
           <FontAwesomeIcon icon={faPause} />
         )}
-      </button>
-
-      <button onClick={onRewind}>
-        <FontAwesomeIcon icon={faStepBackward} />
       </button>
 
       <div className="relative flex items-center">
