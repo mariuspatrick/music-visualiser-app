@@ -6,6 +6,7 @@ import {
   faStepBackward,
   faVolumeHigh,
 } from "@fortawesome/free-solid-svg-icons";
+import { DEFAULT_VOLUME } from "../enums/AudioPlayerTypes";
 
 type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
@@ -24,7 +25,9 @@ function MusicPlayerControls({
   onVolumeChange,
 }: MusicPlayerControlsProps) {
   const [showVolume, setShowVolume] = useState(false);
-  const [volumeState, setVolumeState] = useState(5);
+  const [volumeState, setVolumeState] = useState<
+    typeof DEFAULT_VOLUME | number
+  >(DEFAULT_VOLUME);
 
   function handleVolumeChange(rangeEvent: ReactChangeEvent) {
     const newVol = parseFloat(rangeEvent.target.value);

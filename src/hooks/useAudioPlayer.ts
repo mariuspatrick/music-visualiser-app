@@ -1,12 +1,11 @@
 import { useCallback, useRef, useState } from "react";
-
-const DEFAULT_VOLUME = 5;
+import { DEFAULT_VOLUME } from "../enums/AudioPlayerTypes";
 
 export function useAudioPlayer() {
   const audioCtx = useRef<AudioContext | null>(null);
   const gainNode = useRef<GainNode | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
-  const volumeRef = useRef(DEFAULT_VOLUME);
+  const volumeRef = useRef<number>(DEFAULT_VOLUME);
 
   const initialize = async () => {
     if (!audioCtx.current) {
