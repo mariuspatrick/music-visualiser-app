@@ -38,7 +38,10 @@ export function useAudioPlayer() {
     }
   };
 
-  const connectAndStart = (buffer: AudioBuffer) => {
+  const connectAndStart = (
+    buffer: AudioBuffer,
+    currentStartTime: number = 0,
+  ) => {
     if (!audioCtx.current || !gainNode.current) return;
 
     const source = audioCtx.current.createBufferSource();
@@ -47,13 +50,15 @@ export function useAudioPlayer() {
     // Connect Source -> Gain (and implicitly to -> Destination)
     source.connect(gainNode.current);
 
-    // reset Time, every time we start a sound
-    startTime.current = audioCtx.current.currentTime;
+    // Set playback reference time. When starting from beginning (currentStartTime = 0),
+    // this marks the current moment. When seeking, it offsets to account for the seek position.
+    startTime.current = audioCtx.current.currentTime - currentStartTime;
 
     // Update the UI duration
     setDuration(buffer.duration);
 
-    source.start(0);
+    source.start(0, currentStartTime);
+
     sourceNode.current = source;
   };
 
@@ -111,6 +116,16 @@ export function useAudioPlayer() {
     return Math.max(0, rawTime);
   }, []);
 
+  const seek = (newTime: number) => {
+    if (!sourceNode.current || !sourceNode.current.buffer) return;
+
+    const currentBuffer = sourceNode.current.buffer;
+
+    stopPreviousSource();
+
+    connectAndStart(currentBuffer, newTime);
+  };
+
   return {
     hasStarted,
     isPaused,
@@ -124,6 +139,7 @@ export function useAudioPlayer() {
     setVolume,
     decodeAudioData,
     getCurrentTime,
+    seek,
     isInitialized: () => audioCtx.current !== null,
   };
 }

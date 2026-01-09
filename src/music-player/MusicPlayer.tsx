@@ -20,6 +20,7 @@ function MusicPlayer() {
     decodeAudioData,
     isInitialized,
     getCurrentTime,
+    seek,
   } = useAudioPlayer();
 
   const file = useRef<File>(null);
@@ -84,18 +85,11 @@ function MusicPlayer() {
           {file.current ? file.current.name : "Upload a song"}
         </button>
 
-        {/* {file.current && (
-          <div>
-            <h2>
-              Time: {currentTime.toFixed(1)} / {duration}
-            </h2>
-          </div>
-        )} */}
-
         <ProgressBar
           duration={duration}
           isPlaying={hasStarted}
           getCurrentTime={getCurrentTime}
+          onSeek={seek}
         />
 
         <MusicPlayerControls
