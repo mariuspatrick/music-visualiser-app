@@ -50,10 +50,7 @@ export function useAudioPlayer() {
     }
   };
 
-  const connectAndStart = (
-    buffer: AudioBuffer,
-    currentStartTime: number = 0,
-  ) => {
+  const connectAndStart = (buffer: AudioBuffer, offsetTime: number = 0) => {
     if (!audioCtx.current || !gainNode.current) return;
 
     const source = audioCtx.current.createBufferSource();
@@ -68,12 +65,12 @@ export function useAudioPlayer() {
 
     // Set playback reference time. When starting from beginning (currentStartTime = 0),
     // this marks the current moment. When seeking, it offsets to account for the seek position.
-    startTime.current = audioCtx.current.currentTime - currentStartTime;
+    startTime.current = audioCtx.current.currentTime - offsetTime;
 
     // Update the UI duration
     setDuration(buffer.duration);
 
-    source.start(0, currentStartTime);
+    source.start(0, offsetTime);
 
     sourceNode.current = source;
   };
@@ -94,13 +91,11 @@ export function useAudioPlayer() {
   const sourceNode = useRef<AudioBufferSourceNode | null>(null);
 
   const restart = () => {
-    if (!sourceNode.current || !sourceNode.current.buffer) return;
+    restartWithBuffer();
+  };
 
-    const currentBuffer = sourceNode.current.buffer;
-
-    stopPreviousSource();
-
-    connectAndStart(currentBuffer);
+  const seek = (newTime: number) => {
+    restartWithBuffer(newTime);
   };
 
   const stopPreviousSource = () => {
@@ -109,6 +104,15 @@ export function useAudioPlayer() {
       sourceNode.current.disconnect();
       sourceNode.current = null;
     }
+  };
+
+  const restartWithBuffer = (startTime: number = 0) => {
+    if (!sourceNode.current || !sourceNode.current.buffer) return;
+
+    const currentBuffer = sourceNode.current.buffer;
+    stopPreviousSource();
+    connectAndStart(currentBuffer, startTime);
+    setIsPaused(false);
   };
 
   const setVolume = (val: number) => {
@@ -140,16 +144,6 @@ export function useAudioPlayer() {
     return Math.max(0, rawTime);
   }, []);
 
-  const seek = (newTime: number) => {
-    if (!sourceNode.current || !sourceNode.current.buffer) return;
-
-    const currentBuffer = sourceNode.current.buffer;
-
-    stopPreviousSource();
-
-    connectAndStart(currentBuffer, newTime);
-  };
-
   return {
     hasStarted,
     isPaused,
@@ -164,6 +158,7 @@ export function useAudioPlayer() {
     decodeAudioData,
     getCurrentTime,
     seek,
+    setIsPaused,
     isInitialized: () => audioCtx.current !== null,
   };
 }

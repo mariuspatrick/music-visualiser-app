@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ProgressBarProps {
   duration: number;
   isPlaying: boolean;
   getCurrentTime: () => number;
   onSeek: (arg0: number) => void;
+  onComplete: () => void;
 }
 
 const formatTime = (seconds: number) => {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 };
 
 function ProgressBar({
@@ -18,35 +19,37 @@ function ProgressBar({
   isPlaying,
   getCurrentTime,
   onSeek,
+  onComplete,
 }: ProgressBarProps) {
   const [currentTime, setCurrentTime] = useState(0);
+  const requestRef = useRef<number>(0);
 
   useEffect(() => {
-    let animationFrameId: number;
-
     // this runs 60 times a second
     const loop = () => {
-      if (isPlaying) {
+      if (getCurrentTime) {
         const time = getCurrentTime();
 
-        if (time > duration) {
-          return () => cancelAnimationFrame(animationFrameId);
+        if (time >= duration && duration > 0) {
+          setCurrentTime(duration);
+          if (onComplete) onComplete();
+          return;
         }
 
         setCurrentTime(time);
 
-        animationFrameId = requestAnimationFrame(loop);
+        requestRef.current = requestAnimationFrame(loop);
       }
     };
-
     // START condition: If we are playing, start the loop
     if (isPlaying) {
-      loop();
+      requestRef.current = requestAnimationFrame(loop);
     }
-
     // CLEANUP: If we pause or unmount, kill the loop
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPlaying, duration]);
+    return () => {
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+    };
+  }, [isPlaying, duration, getCurrentTime, onComplete]);
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = Number(e.target.value);

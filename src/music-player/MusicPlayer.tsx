@@ -14,6 +14,7 @@ function MusicPlayer() {
     initialize,
     restart,
     pause,
+    setIsPaused,
     stopPreviousSource,
     playAudioBuffer,
     setVolume,
@@ -90,6 +91,7 @@ function MusicPlayer() {
           isPlaying={hasStarted}
           getCurrentTime={getCurrentTime}
           onSeek={seek}
+          onComplete={() => setIsPaused(true)}
         />
 
         <MusicPlayerControls
