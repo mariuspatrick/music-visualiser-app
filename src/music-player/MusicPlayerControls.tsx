@@ -67,8 +67,8 @@ function MusicPlayerControls({
             <input
               type="range"
               min="0"
-              max="10"
-              step="0.1"
+              max="1"
+              step="0.01"
               value={volumeState}
               className="h-32"
               style={{ writingMode: "vertical-lr", direction: "rtl" }}

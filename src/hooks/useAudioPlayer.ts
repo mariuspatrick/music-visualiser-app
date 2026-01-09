@@ -1,18 +1,30 @@
 import { useCallback, useRef, useState } from "react";
 import { DEFAULT_VOLUME } from "../enums/AudioPlayerTypes";
 
+const MAX_GAIN = 0.5 as const;
+
 export function useAudioPlayer() {
   const audioCtx = useRef<AudioContext | null>(null);
   const gainNode = useRef<GainNode | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
-  const volumeRef = useRef<number>(DEFAULT_VOLUME);
+  const volumeRef = useRef<number>(DEFAULT_VOLUME * MAX_GAIN);
+  const compressorNode = useRef<DynamicsCompressorNode | null>(null);
 
   const initialize = async () => {
     if (!audioCtx.current) {
       audioCtx.current = new AudioContext();
+
+      const compressor = audioCtx.current.createDynamicsCompressor();
+      compressor.threshold.value = -10; // Start lowering volume if it gets near -10dB
+      compressor.knee.value = 30; // Smooth transition
+      compressor.ratio.value = 12; // Squash high peaks hard
+      compressor.attack.value = 0; // React instantly
+      compressor.release.value = 0.25; // Release quickly
+
+      compressorNode.current = compressor;
+
       // const analyser = new AnalyserNode(audioCtx.current);
       gainNode.current = audioCtx.current.createGain();
-
       gainNode.current.gain.value = volumeRef.current;
 
       gainNode.current.connect(audioCtx.current.destination);
@@ -46,6 +58,10 @@ export function useAudioPlayer() {
 
     const source = audioCtx.current.createBufferSource();
     source.buffer = buffer;
+
+    if (volumeRef.current !== undefined && gainNode.current) {
+      gainNode.current.gain.value = volumeRef.current;
+    }
 
     // Connect Source -> Gain (and implicitly to -> Destination)
     source.connect(gainNode.current);
@@ -95,11 +111,19 @@ export function useAudioPlayer() {
     }
   };
 
-  const setVolume = (value: number) => {
-    volumeRef.current = value;
+  const setVolume = (val: number) => {
+    const safeVolume = val * MAX_GAIN;
+
+    volumeRef.current = safeVolume;
 
     if (gainNode.current) {
-      gainNode.current.gain.value = value;
+      // Smoothly transition the volume to avoid "clicks"
+      // "Move to this volume over 0.1 seconds"
+      gainNode.current.gain.setTargetAtTime(
+        safeVolume,
+        audioCtx.current!.currentTime,
+        0.01,
+      );
     }
   };
 
