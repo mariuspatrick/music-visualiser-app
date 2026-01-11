@@ -12,7 +12,7 @@ type ReactChangeEvent = React.ChangeEvent<HTMLInputElement>;
 
 interface MusicPlayerControlsProps {
   isPaused: boolean;
-  onPause: () => void;
+  handlePlayback: () => void;
   volume: number;
   onVolumeChange: (volume: number) => void;
   onRewind: () => void;
@@ -20,7 +20,7 @@ interface MusicPlayerControlsProps {
 
 function MusicPlayerControls({
   isPaused,
-  onPause,
+  handlePlayback,
   onRewind,
   onVolumeChange,
 }: MusicPlayerControlsProps) {
@@ -45,7 +45,7 @@ function MusicPlayerControls({
       </button>
 
       <button
-        onClick={onPause}
+        onClick={handlePlayback}
         className="transition-colors hover:text-slate-300"
       >
         {isPaused ? (

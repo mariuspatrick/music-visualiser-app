@@ -38,7 +38,7 @@ export function useAudioPlayer() {
 
   const [isPaused, setIsPaused] = useState(false);
 
-  const pause = async () => {
+  const toggleAudioPlayback = async () => {
     if (audioCtx.current === null) return;
 
     if (isPaused) {
@@ -71,6 +71,10 @@ export function useAudioPlayer() {
     setDuration(buffer.duration);
 
     source.start(0, offsetTime);
+
+    if (isPaused) {
+      audioCtx.current.resume();
+    }
 
     sourceNode.current = source;
   };
@@ -107,7 +111,7 @@ export function useAudioPlayer() {
   };
 
   const restartWithBuffer = (startTime: number = 0) => {
-    if (!sourceNode.current || !sourceNode.current.buffer) return;
+    if (!sourceNode.current?.buffer) return;
 
     const currentBuffer = sourceNode.current.buffer;
     stopPreviousSource();
@@ -151,7 +155,7 @@ export function useAudioPlayer() {
     volume: volumeRef.current,
     initialize,
     restart,
-    pause,
+    toggleAudioPlayback,
     stopPreviousSource,
     playAudioBuffer,
     setVolume,

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import MusicPlayerControls from "./MusicPlayerControls";
 import ProgressBar from "./ProgressBar";
@@ -13,7 +13,7 @@ function MusicPlayer() {
     volume,
     initialize,
     restart,
-    pause,
+    toggleAudioPlayback,
     setIsPaused,
     stopPreviousSource,
     playAudioBuffer,
@@ -68,6 +68,10 @@ function MusicPlayer() {
     }
   }
 
+  // const handleComplete = useCallback(() => {
+  //   setIsPaused(true);
+  // }, []);
+
   return (
     <>
       <div className="flex flex-col items-center gap-4">
@@ -98,7 +102,7 @@ function MusicPlayer() {
           isPaused={isPaused}
           volume={volume}
           onRewind={restart}
-          onPause={pause}
+          handlePlayback={toggleAudioPlayback}
           onVolumeChange={setVolume}
         />
       </div>
