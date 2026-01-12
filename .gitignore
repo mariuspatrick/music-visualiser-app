@@ -1,24 +1,27 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# --- Global System Files ---
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.vscode/
+.idea/
+*.log
+
+# --- React (visualiser-ui) ---
+visualiser-ui/node_modules
+visualiser-ui/dist
+visualiser-ui/dist-ssr
+visualiser-ui/*.local
+visualiser-ui/npm-debug.log*
+visualiser-ui/yarn-debug.log*
+visualiser-ui/yarn-error.log*
+
+# --- Rails (visualiser-api) ---
+visualiser-api/.config
+visualiser-api/log/*
+!visualiser-api/log/.keep
+visualiser-api/tmp
+visualiser-api/storage/*
+!visualiser-api/storage/.keep
+visualiser-api/vendor
+visualiser-api/db/*.sqlite3
+visualiser-api/db/*.sqlite3-journal
+visualiser-api/.env
+visualiser-api/master.key
