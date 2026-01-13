@@ -24,4 +24,4 @@ visualiser-api/vendor
 visualiser-api/db/*.sqlite3
 visualiser-api/db/*.sqlite3-journal
 visualiser-api/.env
-visualiser-api/master.key
+visualiser-api/config/master.key
